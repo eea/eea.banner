@@ -40,13 +40,9 @@ class BannerGet(Service):
         for stack in rancher_stacks:
             if stack.get("system") or stack.get("name") not in stacks:
                 continue
-            services = stack.get("services", [])
-            if not services:
-                continue
-            for service in services:
-                if not status and service.get("state") != "active":
-                    status = service.get("state")
-                    break
+            if not status and stack.get("state") != "active":
+                status = stack.get("state")
+                break
         return status
 
     def reply(self):
