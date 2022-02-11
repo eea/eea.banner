@@ -19,7 +19,7 @@ class IBannerSettings(Interface):
     )
 
     visible_to_all = schema.Bool(
-        title="Show to anonymous users?l",
+        title="Show to anonymous users?",
         default=True,
         required=False,
     )
