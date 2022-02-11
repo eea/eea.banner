@@ -48,7 +48,8 @@ class IBannerSettings(Interface):
         title="Message",
         required=False,
         default=[
-            "Do not use it for operational purposes. All changes will be regularly overwritten"
+            """Do not use it for operational purposes.
+            All changes will be regularly overwritten"""
         ],
         value_type=schema.TextLine(),
     )
@@ -63,7 +64,8 @@ class IBannerSettings(Interface):
 
     stacks_status_message_template = schema.TextLine(
         title="Stacks status message template",
-        description="Add suffix/prefix to stacks status message. Use {} for status placeholder",
+        description="""Add suffix/prefix to stacks status message.
+        Use {} for status placeholder""",
         default="Web admins says: the system is {}",
         required=False,
     )

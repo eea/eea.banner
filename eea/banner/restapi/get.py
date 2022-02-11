@@ -1,11 +1,11 @@
 """RestAPI enpoint @banner GET"""
 import requests
 from plone import api
-from eea.banner.interfaces import IBannerSettings
 from plone.restapi.services import Service
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from eea.cache import cache
+from eea.banner.interfaces import IBannerSettings
 
 TIMEOUT = 15
 RANCHER_METADATA = "http://rancher-metadata/latest"
