@@ -10,7 +10,8 @@ from eea.banner.interfaces import IEeaBannerLayer
 class BannerControlpanel(RegistryConfigletPanel):
     """Banner Control Panel"""
     schema = IBannerSettings
-    configlet_id = "banner-controlpanel"
+    schema_prefix = None
+    configlet_id = "banner"
     configlet_category_id = "Products"
     title = "Banner Settings"
     group = "Products"
