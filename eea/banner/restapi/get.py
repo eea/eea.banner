@@ -1,9 +1,11 @@
 """RestAPI enpoint @banner GET"""
-import requests
+import json
+from contextlib import closing
 from plone import api
 from plone.restapi.services import Service
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
+from six.moves.urllib import request
 
 # from eea.cache import cache
 from eea.banner.interfaces import IBannerSettings, IEeaBannerLayer
@@ -20,10 +22,9 @@ class BannerGet(Service):
     def get_rancher_metadata(self, url):
         """Returns Rancher metadata API"""
         try:
-            req = requests.get(
-                url, headers={"Accept": "application/json"}, timeout=TIMEOUT
-            )
-            result = req.json()
+            req = request.Request(url, headers={"Accept": "application/json"})
+            with closing(request.urlopen(req, timeout=TIMEOUT)) as conn:
+                result = json.loads(conn.read())
         except Exception:
             result = []
         return result
