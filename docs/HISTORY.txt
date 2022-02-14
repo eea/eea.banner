@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.0 - (2022-02-14)
+---------------------------
+* Change: [Feature #142078] Volto banner enhancements [razvanMiu]
+
 1.0-dev0 - (unreleased)
 -----------------------
 
