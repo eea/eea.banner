@@ -22,8 +22,8 @@ class BannerGet(Service):
     def get_rancher_metadata(self, url):
         """Returns Rancher metadata API"""
         try:
-            req = urllib.request.Request(url,
-                headers={"Accept": "application/json"})
+            req = urllib.request.Request(
+                url, headers={"Accept": "application/json"})
             with closing(urllib.request.urlopen(req, timeout=TIMEOUT)) as conn:
                 result = json.loads(conn.read())
         except Exception:
