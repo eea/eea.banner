@@ -12,64 +12,76 @@ class IEeaBannerLayer(IDefaultBrowserLayer):
 class IBannerSettings(Interface):
     """Client settings for EEA Banner."""
 
-    active = schema.Bool(
-        title="Active",
+    static_banner_enabled = schema.Bool(
+        title="Enable / disable static banner",
         default=True,
         required=False,
     )
 
-    visible_to_all = schema.Bool(
-        title="Show to anonymous users?",
+    static_banner_visible_to_all = schema.Bool(
+        title="Show static banner to anonymous users?",
         default=True,
         required=False,
     )
 
-    visible_on_login = schema.Bool(
-        title="Show on login form?",
-        default=True,
-        required=False,
-    )
-
-    type = schema.Choice(
-        title="Type",
+    static_banner_type = schema.Choice(
+        title="Static banner type",
         default="warning",
         vocabulary=SimpleVocabulary.fromValues(
             ["success", "warning", "error"]
         ),
     )
 
-    title = schema.TextLine(
-        title="Title",
+    static_banner_title = schema.TextLine(
+        title="Static banner title",
         default="This is a demo/test instance",
         required=False,
     )
 
-    message = schema.List(
-        title="Message",
+    static_banner_message = schema.Text(
+        title="Static banner message",
         required=False,
-        default=[
-            (
-                "Do not use it for operational purposes. "
-                "All changes will be regularly overwritten"
-            )
-        ],
-        value_type=schema.TextLine(),
+        default=(
+            "Do not use it for operational purposes. "
+            "All changes will be regularly overwritten"
+        ),
     )
 
-    stacks = schema.List(
-        title="Rancher stacks",
-        description="List of rancher stacks for status checking",
+    dynamic_banner_enabled = schema.Bool(
+        title="Enable / disable dynamic banner",
+        default=True,
+        required=False,
+        description=(
+            "It will appear only if status of at least one stack "
+            "is not 'active'"
+        ),
+    )
+
+    dynamic_banner_visible_to_all = schema.Bool(
+        title="Show dynamic banner to anonymous users?",
+        default=True,
+        required=False,
+    )
+
+    rancher_stacks = schema.List(
+        title="Rancher stacks to monitor",
         required=False,
         default=[],
         value_type=schema.TextLine(),
     )
 
-    stacks_status_message_template = schema.TextLine(
-        title="Stacks status message template",
-        description=(
-            "Add suffix/prefix to stacks status message. "
-            "Use {} for status placeholder"
-        ),
-        default="Web admins says: the system is {}",
+    dynamic_banner_title = schema.TextLine(
+        title="Dynamic banner title",
+        default="Web admins says:",
         required=False,
+    )
+
+    dynamic_banner_message = schema.Text(
+        title="Dynamic banner message",
+        required=False,
+        default="The system is {}",
+        description=(
+            "Add suffix/prefix to rancher stacks status message. "
+            "Use {} for rancher stacks status placeholder"
+        ),
     )

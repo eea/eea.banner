@@ -4,8 +4,9 @@ from plone import api
 from plone.restapi.services import Service
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
-from eea.cache import cache
-from eea.banner.interfaces import IBannerSettings
+
+# from eea.cache import cache
+from eea.banner.interfaces import IBannerSettings, IEeaBannerLayer
 
 TIMEOUT = 15
 RANCHER_METADATA = "http://rancher-metadata/latest"
@@ -32,7 +33,7 @@ class BannerGet(Service):
         url = "%s/stacks" % RANCHER_METADATA
         return self.get_rancher_metadata(url)
 
-    @cache(lambda *args: "rancher-status", lifetime=MEMCACHE_AGE)
+    # @cache(lambda *args: "rancher-status", lifetime=MEMCACHE_AGE)
     def get_stacks_status(self, stacks):
         """Returns status of required stacks"""
         status = None
@@ -52,35 +53,64 @@ class BannerGet(Service):
     def reply(self):
         """Reply"""
         development = self.request.form.get("development")
+        if not IEeaBannerLayer.providedBy(self.request):
+            return {
+                "static_banner": {"enabled": False},
+                "dynamic_banner": {"enabled": False},
+            }
         return {
-            "active": api.portal.get_registry_record(
-                "active", interface=IBannerSettings, default=""
-            ),
-            "visible_to_all": api.portal.get_registry_record(
-                "visible_to_all", interface=IBannerSettings, default=""
-            ),
-            "visible_on_login": api.portal.get_registry_record(
-                "visible_on_login", interface=IBannerSettings, default=""
-            ),
-            "type": api.portal.get_registry_record(
-                "type", interface=IBannerSettings, default=""
-            ),
-            "title": api.portal.get_registry_record(
-                "title", interface=IBannerSettings, default=""
-            ),
-            "message": api.portal.get_registry_record(
-                "message", interface=IBannerSettings, default=""
-            ),
-            "stacks_status": None
-            if development
-            else self.get_stacks_status(
-                api.portal.get_registry_record(
-                    "stacks", interface=IBannerSettings, default=""
-                )
-            ),
-            "stacks_status_message_template": api.portal.get_registry_record(
-                "stacks_status_message_template",
-                interface=IBannerSettings,
-                default="",
-            ),
+            "static_banner": {
+                "enabled": api.portal.get_registry_record(
+                    "static_banner_enabled",
+                    interface=IBannerSettings,
+                    default=False,
+                ),
+                "visible_to_all": api.portal.get_registry_record(
+                    "static_banner_visible_to_all",
+                    interface=IBannerSettings,
+                    default="",
+                ),
+                "type": api.portal.get_registry_record(
+                    "static_banner_type", interface=IBannerSettings, default=""
+                ),
+                "title": api.portal.get_registry_record(
+                    "static_banner_title",
+                    interface=IBannerSettings,
+                    default="",
+                ),
+                "message": api.portal.get_registry_record(
+                    "static_banner_message",
+                    interface=IBannerSettings,
+                    default="",
+                ),
+            },
+            "dynamic_banner": {
+                "enabled": api.portal.get_registry_record(
+                    "dynamic_banner_enabled",
+                    interface=IBannerSettings,
+                    default="",
+                ),
+                "visible_to_all": api.portal.get_registry_record(
+                    "dynamic_banner_visible_to_all",
+                    interface=IBannerSettings,
+                    default="",
+                ),
+                "title": api.portal.get_registry_record(
+                    "dynamic_banner_title",
+                    interface=IBannerSettings,
+                    default="",
+                ),
+                "message": api.portal.get_registry_record(
+                    "dynamic_banner_message",
+                    interface=IBannerSettings,
+                    default="",
+                ),
+                "rancher_stacks_status": None
+                if development
+                else self.get_stacks_status(
+                    api.portal.get_registry_record(
+                        "rancher_stacks", interface=IBannerSettings, default=""
+                    )
+                ),
+            },
         }
