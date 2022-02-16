@@ -55,6 +55,11 @@ class BannerGet(Service):
     def reply(self):
         """Reply"""
         development = self.request.form.get("development")
+        dynamic_banner_enabled = api.portal.get_registry_record(
+            "dynamic_banner_enabled",
+            interface=IBannerSettings,
+            default="",
+        )
         if not IEeaBannerLayer.providedBy(self.request):
             return {
                 "static_banner": {"enabled": False},
@@ -87,11 +92,7 @@ class BannerGet(Service):
                 ),
             },
             "dynamic_banner": {
-                "enabled": api.portal.get_registry_record(
-                    "dynamic_banner_enabled",
-                    interface=IBannerSettings,
-                    default="",
-                ),
+                "enabled": dynamic_banner_enabled,
                 "visible_to_all": api.portal.get_registry_record(
                     "dynamic_banner_visible_to_all",
                     interface=IBannerSettings,
@@ -108,11 +109,11 @@ class BannerGet(Service):
                     default="",
                 ),
                 "rancher_stacks_status": None
-                if development
+                if development or not dynamic_banner_enabled
                 else self.get_stacks_status(
                     api.portal.get_registry_record(
                         "rancher_stacks", interface=IBannerSettings, default=""
-                    )
+                    ) or []
                 ),
             },
         }

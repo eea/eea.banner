@@ -66,6 +66,7 @@ class IBannerSettings(Interface):
 
     rancher_stacks = schema.List(
         title=_(u"Rancher stacks to monitor"),
+        default=[],
         required=False,
         value_type=schema.TextLine(),
     )
