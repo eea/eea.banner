@@ -14,19 +14,23 @@ class IBannerSettings(Interface):
     """Client settings for EEA Banner."""
 
     static_banner_enabled = schema.Bool(
-        title=_(u"Enable / disable static banner"),
+        title=_("Enable / disable static banner"),
+        description=_(
+            "If STATIC_BANNER_ENABLED environment variable is 'on' "
+            "this flag has no effect"
+        ),
         default=True,
         required=False,
     )
 
     static_banner_visible_to_all = schema.Bool(
-        title=_(u"Show static banner to anonymous users?"),
+        title=_("Show static banner to anonymous users?"),
         default=True,
         required=False,
     )
 
     static_banner_type = schema.Choice(
-        title=_(u"Static banner type"),
+        title=_("Static banner type"),
         default="warning",
         vocabulary=SimpleVocabulary.fromValues(
             ["success", "warning", "error"]
@@ -34,55 +38,57 @@ class IBannerSettings(Interface):
     )
 
     static_banner_title = schema.TextLine(
-        title=_(u"Static banner title"),
-        default=u"This is a demo/test instance",
+        title=_("Static banner title"),
+        default="This is a demo/test instance",
         required=False,
     )
 
     static_banner_message = schema.Text(
-        title=_(u"Static banner message"),
+        title=_("Static banner message"),
         required=False,
         default=(
-            u"Do not use it for operational purposes. "
-            u"All changes will be regularly overwritten"
+            "Do not use it for operational purposes. "
+            "All changes will be regularly overwritten"
         ),
     )
 
     dynamic_banner_enabled = schema.Bool(
-        title=_(u"Enable / disable dynamic banner"),
+        title=_("Enable / disable dynamic banner"),
         default=True,
         required=False,
-        description=(
-            u"It will appear only if status of at least one stack "
-            u"is not 'active'"
+        description=_(
+            "It will appear only if status of at least one stack "
+            "is not 'active'. "
+            "If STATIC_BANNER_ENABLED environment variable is 'on' "
+            "this flag has no effect"
         ),
     )
 
     dynamic_banner_visible_to_all = schema.Bool(
-        title=_(u"Show dynamic banner to anonymous users?"),
+        title=_("Show dynamic banner to anonymous users?"),
         default=True,
         required=False,
     )
 
     rancher_stacks = schema.List(
-        title=_(u"Rancher stacks to monitor"),
+        title=_("Rancher stacks to monitor"),
         default=[],
         required=False,
         value_type=schema.TextLine(),
     )
 
     dynamic_banner_title = schema.TextLine(
-        title=_(u"Dynamic banner title"),
-        default=u"Web admins says:",
+        title=_("Dynamic banner title"),
+        default="Web admins says:",
         required=False,
     )
 
     dynamic_banner_message = schema.Text(
-        title=_(u"Dynamic banner message"),
+        title=_("Dynamic banner message"),
         required=False,
-        default=u"The system is {}",
+        default="The system is {}",
         description=(
-            u"Add suffix/prefix to rancher stacks status message. "
-            u"Use {} for rancher stacks status placeholder"
+            "Add suffix/prefix to rancher stacks status message. "
+            "Use {} for rancher stacks status placeholder"
         ),
     )
