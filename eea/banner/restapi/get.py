@@ -1,4 +1,5 @@
 """RestAPI enpoint @banner GET"""
+import os
 import json
 from contextlib import closing
 from six.moves import urllib
@@ -15,6 +16,15 @@ RANCHER_METADATA = "http://rancher-metadata/latest"
 MEMCACHE_AGE = 300
 
 
+def isTrue(value):
+    """Evaluate True"""
+    if isinstance(value, str):
+        return value.lower() in ("true", "1", "t", "on", "yes", "y")
+    if isinstance(value, bool):
+        return value
+    return False
+
+
 @implementer(IPublishTraverse)
 class BannerGet(Service):
     """Banner GET"""
@@ -23,7 +33,8 @@ class BannerGet(Service):
         """Returns Rancher metadata API"""
         try:
             req = urllib.request.Request(
-                url, headers={"Accept": "application/json"})
+                url, headers={"Accept": "application/json"}
+            )
             with closing(urllib.request.urlopen(req, timeout=TIMEOUT)) as conn:
                 result = json.loads(conn.read())
         except Exception:
@@ -54,11 +65,21 @@ class BannerGet(Service):
 
     def reply(self):
         """Reply"""
+
         development = self.request.form.get("development")
-        dynamic_banner_enabled = api.portal.get_registry_record(
+        dynamic_banner_enabled = isTrue(
+            os.getenv("DYNAMIC_BANNER_ENABLED", False)
+        ) or api.portal.get_registry_record(
             "dynamic_banner_enabled",
             interface=IBannerSettings,
             default="",
+        )
+        static_banner_enabled = isTrue(
+            os.getenv("STATIC_BANNER_ENABLED", False)
+        ) or api.portal.get_registry_record(
+            "static_banner_enabled",
+            interface=IBannerSettings,
+            default=False,
         )
         if not IEeaBannerLayer.providedBy(self.request):
             return {
@@ -67,11 +88,7 @@ class BannerGet(Service):
             }
         return {
             "static_banner": {
-                "enabled": api.portal.get_registry_record(
-                    "static_banner_enabled",
-                    interface=IBannerSettings,
-                    default=False,
-                ),
+                "enabled": static_banner_enabled,
                 "visible_to_all": api.portal.get_registry_record(
                     "static_banner_visible_to_all",
                     interface=IBannerSettings,

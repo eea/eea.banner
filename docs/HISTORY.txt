@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.2 - (2022-02-16)
+---------------------------
+* Change: Banner can be enabled from env
+  [razvanMiu]
+
 1.1 - (2022-02-16)
 ---------------------------
 * Change: Check if dynamic_banner_enabled before getting rancher state.

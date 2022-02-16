@@ -15,6 +15,10 @@ class IBannerSettings(Interface):
 
     static_banner_enabled = schema.Bool(
         title=_(u"Enable / disable static banner"),
+        description=_(
+            u"If STATIC_BANNER_ENABLED environment variable is 'on' "
+            u"this flag has no effect"
+        ),
         default=True,
         required=False,
     )
@@ -52,9 +56,11 @@ class IBannerSettings(Interface):
         title=_(u"Enable / disable dynamic banner"),
         default=True,
         required=False,
-        description=(
+        description=_(
             u"It will appear only if status of at least one stack "
-            u"is not 'active'"
+            u"is not 'active'. "
+            u"If STATIC_BANNER_ENABLED environment variable is 'on' "
+            u"this flag has no effect"
         ),
     )
 
