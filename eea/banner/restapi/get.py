@@ -130,8 +130,7 @@ class BannerGet(Service):
                 else self.get_stacks_status(
                     api.portal.get_registry_record(
                         "rancher_stacks", interface=IBannerSettings, default=""
-                    )
-                    or []
+                    ) or []
                 ),
             },
         }
