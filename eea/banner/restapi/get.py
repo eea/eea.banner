@@ -19,7 +19,7 @@ MEMCACHE_AGE = 300
 def isTrue(value):
     """Evaluate True"""
     if isinstance(value, str):
-        return value.lower() in ("true", "1", "t", "on")
+        return value.lower() in ("true", "1", "t", "on", "yes", "y")
     if isinstance(value, bool):
         return value
     return False
