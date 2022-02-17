@@ -66,13 +66,18 @@ class BannerGet(Service):
     def reply(self):
         """Reply"""
 
+        if not IEeaBannerLayer.providedBy(self.request):
+            return {
+                "static_banner": {"enabled": False},
+                "dynamic_banner": {"enabled": False},
+            }
         development = self.request.form.get("development")
         dynamic_banner_enabled = isTrue(
             os.getenv("DYNAMIC_BANNER_ENABLED", False)
         ) or api.portal.get_registry_record(
             "dynamic_banner_enabled",
             interface=IBannerSettings,
-            default="",
+            default=False,
         )
         static_banner_enabled = isTrue(
             os.getenv("STATIC_BANNER_ENABLED", False)
@@ -81,18 +86,13 @@ class BannerGet(Service):
             interface=IBannerSettings,
             default=False,
         )
-        if not IEeaBannerLayer.providedBy(self.request):
-            return {
-                "static_banner": {"enabled": False},
-                "dynamic_banner": {"enabled": False},
-            }
         return {
             "static_banner": {
                 "enabled": static_banner_enabled,
                 "visible_to_all": api.portal.get_registry_record(
                     "static_banner_visible_to_all",
                     interface=IBannerSettings,
-                    default="",
+                    default=False,
                 ),
                 "type": api.portal.get_registry_record(
                     "static_banner_type", interface=IBannerSettings, default=""
@@ -113,7 +113,7 @@ class BannerGet(Service):
                 "visible_to_all": api.portal.get_registry_record(
                     "dynamic_banner_visible_to_all",
                     interface=IBannerSettings,
-                    default="",
+                    default=False,
                 ),
                 "title": api.portal.get_registry_record(
                     "dynamic_banner_title",
@@ -129,8 +129,9 @@ class BannerGet(Service):
                 if development or not dynamic_banner_enabled
                 else self.get_stacks_status(
                     api.portal.get_registry_record(
-                        "rancher_stacks", interface=IBannerSettings, default=""
-                    ) or []
+                        "rancher_stacks", interface=IBannerSettings, default=[]
+                    )
+                    or []
                 ),
             },
         }
