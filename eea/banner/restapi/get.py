@@ -5,6 +5,7 @@ from contextlib import closing
 from six.moves import urllib
 from plone import api
 from plone.restapi.services import Service
+from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
@@ -72,20 +73,25 @@ class BannerGet(Service):
                 "dynamic_banner": {"enabled": False},
             }
         development = self.request.form.get("development")
+
+        dynamic_banner_env = "DYNAMIC_BANNER_ENABLED_" + getSite().getId()
         dynamic_banner_enabled = isTrue(
-            os.getenv("DYNAMIC_BANNER_ENABLED", False)
+            os.getenv(dynamic_banner_env, False)
         ) or api.portal.get_registry_record(
             "dynamic_banner_enabled",
             interface=IBannerSettings,
             default=False,
         )
+
+        static_banner_env = "STATIC_BANNER_ENABLED_" + getSite().getId()
         static_banner_enabled = isTrue(
-            os.getenv("STATIC_BANNER_ENABLED", False)
+            os.getenv(static_banner_env, False)
         ) or api.portal.get_registry_record(
             "static_banner_enabled",
             interface=IBannerSettings,
             default=False,
         )
+
         return {
             "static_banner": {
                 "enabled": static_banner_enabled,
