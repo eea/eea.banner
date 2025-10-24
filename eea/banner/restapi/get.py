@@ -1,4 +1,5 @@
 """RestAPI enpoint @banner GET"""
+
 import os
 import json
 from contextlib import closing
@@ -33,9 +34,7 @@ class BannerGet(Service):
     def get_rancher_metadata(self, url):
         """Returns Rancher metadata API"""
         try:
-            req = urllib.request.Request(
-                url, headers={"Accept": "application/json"}
-            )
+            req = urllib.request.Request(url, headers={"Accept": "application/json"})
             with closing(urllib.request.urlopen(req, timeout=TIMEOUT)) as conn:
                 result = json.loads(conn.read())
         except Exception:
@@ -136,7 +135,8 @@ class BannerGet(Service):
                 else self.get_stacks_status(
                     api.portal.get_registry_record(
                         "rancher_stacks", interface=IBannerSettings, default=[]
-                    ) or []
+                    )
+                    or []
                 ),
             },
         }
