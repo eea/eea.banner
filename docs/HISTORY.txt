@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.6 - (2026-04-14)
+---------------------------
+* Change: Add unit tests for isTrue function
+  [avoinea]
+
 1.5 - (2025-11-18)
 ---------------------------
 * Change: Replace Python linting to ruff
