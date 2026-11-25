@@ -95,44 +95,17 @@ class IBannerSettings(model.Schema):
     model.fieldset(
         "release_banner",
         label=_("Release banner"),
-        fields=[
-            "release_banner_enabled",
-            "release_banner_version",
-            "release_banner_title",
-            "release_banner_message",
-        ],
+        fields=["release_banner_enabled"],
     )
 
     release_banner_enabled = schema.Bool(
         title=_("Enable / disable release banner"),
         description=_(
-            "Announces a new release to authenticated users. It is "
-            "independent of the static and dynamic banners and can be "
-            "closed by each user."
+            "Shows authenticated users the latest release notes generated "
+            "by the release-notes agent and shipped with the helm chart "
+            "(RELEASE_NOTES_DIR). Without those files no banner is shown. "
+            "Each user can close it until the next release."
         ),
-        default=False,
-        required=False,
-    )
-
-    release_banner_version = schema.TextLine(
-        title=_("Release version"),
-        description=_(
-            "When a user closes the banner, a cookie remembers this "
-            "version. Changing it shows the banner again to everyone."
-        ),
-        default="",
-        required=False,
-    )
-
-    release_banner_title = schema.TextLine(
-        title=_("Release banner title"),
-        default="What's new",
-        required=False,
-    )
-
-    release_banner_message = schema.Text(
-        title=_("Release banner message"),
-        description=_("HTML is allowed, e.g. a link to the release notes."),
-        default="A new version of this website has been released.",
+        default=True,
         required=False,
     )

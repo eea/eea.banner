@@ -2,7 +2,6 @@
 
 import os
 import json
-import hashlib
 from contextlib import closing
 from six.moves import urllib
 from plone import api
@@ -13,6 +12,7 @@ from zope.publisher.interfaces import IPublishTraverse
 
 # from eea.cache import cache
 from eea.banner.interfaces import IBannerSettings, IEeaBannerLayer
+from eea.banner.release_notes import load_release_notes
 
 TIMEOUT = 15
 RANCHER_METADATA = "http://rancher-metadata/latest"
@@ -26,14 +26,6 @@ def isTrue(value):
     if isinstance(value, bool):
         return value
     return False
-
-
-def release_banner_id(version, title, message):
-    """Key stored in the dismiss cookie: the version, or a content hash"""
-    if version and version.strip():
-        return version.strip()
-    content = "%s|%s" % (title or "", message or "")
-    return hashlib.sha1(content.encode("utf-8")).hexdigest()[:12]
 
 
 @implementer(IPublishTraverse)
@@ -72,6 +64,30 @@ class BannerGet(Service):
                     break
         return status
 
+    def release_banner(self):
+        """Release banner from the release-notes agent files.
+
+        Only for authenticated users, and only the version (used as the
+        dismiss cookie key) and a plain-text summary are returned.
+        """
+        disabled = {"enabled": False}
+        if api.user.is_anonymous():
+            return disabled
+        if not api.portal.get_registry_record(
+            "release_banner_enabled", interface=IBannerSettings, default=False
+        ):
+            return disabled
+        notes = load_release_notes()
+        if not notes:
+            return disabled
+        return {
+            "enabled": True,
+            "id": notes["release"],
+            "title": "What's new in %s" % notes["release"],
+            "message": notes["summary"]
+            or "A new version of this website has been released.",
+        }
+
     def reply(self):
         """Reply"""
 
@@ -101,25 +117,8 @@ class BannerGet(Service):
             default=False,
         )
 
-        def record(name, default):
-            return api.portal.get_registry_record(
-                name, interface=IBannerSettings, default=default
-            )
-
-        release_title = record("release_banner_title", "")
-        release_message = record("release_banner_message", "")
-
         return {
-            "release_banner": {
-                "enabled": record("release_banner_enabled", False),
-                "id": release_banner_id(
-                    record("release_banner_version", ""),
-                    release_title,
-                    release_message,
-                ),
-                "title": release_title,
-                "message": release_message,
-            },
+            "release_banner": self.release_banner(),
             "static_banner": {
                 "enabled": static_banner_enabled,
                 "visible_to_all": api.portal.get_registry_record(
