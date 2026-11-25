@@ -119,7 +119,6 @@ class BannerGet(Service):
                 ),
                 "title": release_title,
                 "message": release_message,
-                "dismiss_days": record("release_banner_dismiss_days", 90),
             },
             "static_banner": {
                 "enabled": static_banner_enabled,

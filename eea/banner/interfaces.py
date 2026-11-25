@@ -100,7 +100,6 @@ class IBannerSettings(model.Schema):
             "release_banner_version",
             "release_banner_title",
             "release_banner_message",
-            "release_banner_dismiss_days",
         ],
     )
 
@@ -135,12 +134,5 @@ class IBannerSettings(model.Schema):
         title=_("Release banner message"),
         description=_("HTML is allowed, e.g. a link to the release notes."),
         default="A new version of this website has been released.",
-        required=False,
-    )
-
-    release_banner_dismiss_days = schema.Int(
-        title=_("Keep the release banner closed for (days)"),
-        default=90,
-        min=1,
         required=False,
     )
