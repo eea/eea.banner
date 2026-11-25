@@ -97,7 +97,6 @@ class IBannerSettings(model.Schema):
         label=_("Release banner"),
         fields=[
             "release_banner_enabled",
-            "release_banner_visible_to_all",
             "release_banner_version",
             "release_banner_title",
             "release_banner_message",
@@ -108,16 +107,10 @@ class IBannerSettings(model.Schema):
     release_banner_enabled = schema.Bool(
         title=_("Enable / disable release banner"),
         description=_(
-            "Announces a new release. It is independent of the static "
-            "and dynamic banners and can be closed by each user."
+            "Announces a new release to authenticated users. It is "
+            "independent of the static and dynamic banners and can be "
+            "closed by each user."
         ),
-        default=False,
-        required=False,
-    )
-
-    release_banner_visible_to_all = schema.Bool(
-        title=_("Show release banner to anonymous users?"),
-        description=_("When off, only authenticated users see it."),
         default=False,
         required=False,
     )

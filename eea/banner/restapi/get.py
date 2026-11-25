@@ -112,9 +112,6 @@ class BannerGet(Service):
         return {
             "release_banner": {
                 "enabled": record("release_banner_enabled", False),
-                "visible_to_all": record(
-                    "release_banner_visible_to_all", False
-                ),
                 "id": release_banner_id(
                     record("release_banner_version", ""),
                     release_title,
