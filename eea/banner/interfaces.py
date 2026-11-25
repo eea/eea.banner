@@ -1,8 +1,8 @@
 """Module where all interfaces, events and exceptions live."""
 
+from plone.supermodel import model
 from zope import schema
 from zope.schema.vocabulary import SimpleVocabulary
-from zope.interface import Interface
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from eea.banner import EEAMessageFactory as _
 
@@ -11,7 +11,7 @@ class IEeaBannerLayer(IDefaultBrowserLayer):
     """Marker interface that defines a browser layer."""
 
 
-class IBannerSettings(Interface):
+class IBannerSettings(model.Schema):
     """Client settings for EEA Banner."""
 
     static_banner_enabled = schema.Bool(
@@ -90,4 +90,64 @@ class IBannerSettings(Interface):
             "Add suffix/prefix to rancher stacks status message. "
             "Use {} for rancher stacks status placeholder"
         ),
+    )
+
+    model.fieldset(
+        "release_banner",
+        label=_("Release banner"),
+        fields=[
+            "release_banner_enabled",
+            "release_banner_visible_to_all",
+            "release_banner_version",
+            "release_banner_title",
+            "release_banner_message",
+            "release_banner_dismiss_days",
+        ],
+    )
+
+    release_banner_enabled = schema.Bool(
+        title=_("Enable / disable release banner"),
+        description=_(
+            "Announces a new release. It is independent of the static "
+            "and dynamic banners and can be closed by each user."
+        ),
+        default=False,
+        required=False,
+    )
+
+    release_banner_visible_to_all = schema.Bool(
+        title=_("Show release banner to anonymous users?"),
+        description=_("When off, only authenticated users see it."),
+        default=False,
+        required=False,
+    )
+
+    release_banner_version = schema.TextLine(
+        title=_("Release version"),
+        description=_(
+            "When a user closes the banner, a cookie remembers this "
+            "version. Changing it shows the banner again to everyone."
+        ),
+        default="",
+        required=False,
+    )
+
+    release_banner_title = schema.TextLine(
+        title=_("Release banner title"),
+        default="What's new",
+        required=False,
+    )
+
+    release_banner_message = schema.Text(
+        title=_("Release banner message"),
+        description=_("HTML is allowed, e.g. a link to the release notes."),
+        default="A new version of this website has been released.",
+        required=False,
+    )
+
+    release_banner_dismiss_days = schema.Int(
+        title=_("Keep the release banner closed for (days)"),
+        default=90,
+        min=1,
+        required=False,
     )

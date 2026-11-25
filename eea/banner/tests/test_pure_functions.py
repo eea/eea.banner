@@ -2,10 +2,11 @@
 
 These tests cover pure functions that don't require Plone context:
 - isTrue
+- release_banner_id
 """
 
 import unittest
-from eea.banner.restapi.get import isTrue
+from eea.banner.restapi.get import isTrue, release_banner_id
 
 
 class TestIsTrue(unittest.TestCase):
@@ -65,3 +66,20 @@ class TestIsTrue(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestReleaseBannerId(unittest.TestCase):
+    """Tests for release_banner_id function"""
+
+    def test_uses_version_when_set(self):
+        self.assertEqual(release_banner_id(" 2.3.0 ", "T", "M"), "2.3.0")
+
+    def test_hash_when_no_version(self):
+        key = release_banner_id("", "T", "M")
+        self.assertEqual(len(key), 12)
+        self.assertEqual(key, release_banner_id(None, "T", "M"))
+
+    def test_hash_changes_with_content(self):
+        self.assertNotEqual(
+            release_banner_id("", "T", "M1"), release_banner_id("", "T", "M2")
+        )
