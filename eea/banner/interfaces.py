@@ -1,8 +1,8 @@
 """Module where all interfaces, events and exceptions live."""
 
+from plone.supermodel import model
 from zope import schema
 from zope.schema.vocabulary import SimpleVocabulary
-from zope.interface import Interface
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from eea.banner import EEAMessageFactory as _
 
@@ -11,7 +11,7 @@ class IEeaBannerLayer(IDefaultBrowserLayer):
     """Marker interface that defines a browser layer."""
 
 
-class IBannerSettings(Interface):
+class IBannerSettings(model.Schema):
     """Client settings for EEA Banner."""
 
     static_banner_enabled = schema.Bool(
@@ -90,4 +90,22 @@ class IBannerSettings(Interface):
             "Add suffix/prefix to rancher stacks status message. "
             "Use {} for rancher stacks status placeholder"
         ),
+    )
+
+    model.fieldset(
+        "release_banner",
+        label=_("Release banner"),
+        fields=["release_banner_enabled"],
+    )
+
+    release_banner_enabled = schema.Bool(
+        title=_("Enable / disable release banner"),
+        description=_(
+            "Shows authenticated users the latest release notes generated "
+            "by the release-notes agent and shipped with the frontend helm "
+            "chart. Without those files no banner is shown. Each user can "
+            "close it until the next release."
+        ),
+        default=True,
+        required=False,
     )

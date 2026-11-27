@@ -63,6 +63,21 @@ class BannerGet(Service):
                     break
         return status
 
+    def release_banner(self):
+        """Whether the release banner may be shown.
+
+        Plone only decides who sees it: authenticated users, when the
+        "Release banner" switch is on. The content (release + summary) comes
+        from the release-notes agent files shipped with the frontend chart
+        and served by the Volto server.
+        """
+        if api.user.is_anonymous():
+            return {"enabled": False}
+        enabled = api.portal.get_registry_record(
+            "release_banner_enabled", interface=IBannerSettings, default=False
+        )
+        return {"enabled": bool(enabled)}
+
     def reply(self):
         """Reply"""
 
@@ -70,6 +85,7 @@ class BannerGet(Service):
             return {
                 "static_banner": {"enabled": False},
                 "dynamic_banner": {"enabled": False},
+                "release_banner": {"enabled": False},
             }
         development = self.request.form.get("development")
 
@@ -92,6 +108,7 @@ class BannerGet(Service):
         )
 
         return {
+            "release_banner": self.release_banner(),
             "static_banner": {
                 "enabled": static_banner_enabled,
                 "visible_to_all": api.portal.get_registry_record(

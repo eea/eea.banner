@@ -15,4 +15,16 @@
 
   </genericsetup:upgradeSteps>
 
+  <genericsetup:upgradeSteps
+    source="1.0"
+    destination="1.1"
+    profile="eea.banner:default">
+
+    <genericsetup:upgradeDepends
+       title="Add release banner settings to the registry"
+       import_steps="plone.app.registry"
+      />
+
+  </genericsetup:upgradeSteps>
+
 </configure>
