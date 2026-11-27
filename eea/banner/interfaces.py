@@ -102,9 +102,9 @@ class IBannerSettings(model.Schema):
         title=_("Enable / disable release banner"),
         description=_(
             "Shows authenticated users the latest release notes generated "
-            "by the release-notes agent and shipped with the helm chart "
-            "(RELEASE_NOTES_DIR). Without those files no banner is shown. "
-            "Each user can close it until the next release."
+            "by the release-notes agent and shipped with the frontend helm "
+            "chart. Without those files no banner is shown. Each user can "
+            "close it until the next release."
         ),
         default=True,
         required=False,

@@ -12,7 +12,6 @@ from zope.publisher.interfaces import IPublishTraverse
 
 # from eea.cache import cache
 from eea.banner.interfaces import IBannerSettings, IEeaBannerLayer
-from eea.banner.release_notes import load_release_notes
 
 TIMEOUT = 15
 RANCHER_METADATA = "http://rancher-metadata/latest"
@@ -65,28 +64,19 @@ class BannerGet(Service):
         return status
 
     def release_banner(self):
-        """Release banner from the release-notes agent files.
+        """Whether the release banner may be shown.
 
-        Only for authenticated users, and only the version (used as the
-        dismiss cookie key) and a plain-text summary are returned.
+        Plone only decides who sees it: authenticated users, when the
+        "Release banner" switch is on. The content (release + summary) comes
+        from the release-notes agent files shipped with the frontend chart
+        and served by the Volto server.
         """
-        disabled = {"enabled": False}
         if api.user.is_anonymous():
-            return disabled
-        if not api.portal.get_registry_record(
+            return {"enabled": False}
+        enabled = api.portal.get_registry_record(
             "release_banner_enabled", interface=IBannerSettings, default=False
-        ):
-            return disabled
-        notes = load_release_notes()
-        if not notes:
-            return disabled
-        return {
-            "enabled": True,
-            "id": notes["release"],
-            "title": "What's new in %s" % notes["release"],
-            "message": notes["summary"]
-            or "A new version of this website has been released.",
-        }
+        )
+        return {"enabled": bool(enabled)}
 
     def reply(self):
         """Reply"""
